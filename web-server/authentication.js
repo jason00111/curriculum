@@ -11,7 +11,14 @@ const addFakeAuthenticatedUser = (request, response, next ) => {
   next()
 }
 
-if (process.env.DISABLE_IDM) {
+if (process.env.NODE_ENV === 'test') {
+  const addFakeBackOffice = require('../test/addFakeBackOffice')
+
+  module.exports = app => {
+    app.use(addFakeAuthenticatedUser)
+    app.use(addFakeBackOffice)
+  }
+} else if (process.env.DISABLE_IDM) {
   module.exports = app => {
     app.use(addFakeAuthenticatedUser)
   }
